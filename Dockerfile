@@ -15,13 +15,13 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 
 # Expose port 5001 for the Flask application
-EXPOSE 5000
+EXPOSE 5001
 
 
 RUN useradd -m appuser
 USER appuser
 
-ENV PORT=5000
+ENV PORT=5001
 
 CMD gunicorn --workers=3 --bind 0.0.0.0:$PORT app:app
 
