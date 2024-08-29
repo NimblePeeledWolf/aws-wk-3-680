@@ -7,41 +7,45 @@ from ucimlrepo import fetch_ucirepo
 
 app = Flask(__name__)
 
-wine_quality = fetch_ucirepo(id=186) 
-  
-# data (as pandas dataframes) 
+# Fetch and prepare data
+wine_quality = fetch_ucirepo(id=186)  
 x = wine_quality.data.features 
 y = wine_quality.data.targets 
-x_train,x_test,y_train,y_test = train_test_split(x,y,test_size=0.2, random_state=42)
+x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=42)
 
-with open('model.pkl','rb') as file:
+# Load model
+with open('model.pkl', 'rb') as file:
     model = pickle.load(file)
-model.fit(x_train,y_train)
 
+# Define routes
 @app.route('/')
 def index():
     return render_template('index.html')
 
-@app.route('/predict',methods=['POST'])
+@app.route('/predict', methods=['POST'])
 def predict():
-    fixed_acidity = float(request.form['fixed_acidity'])
-    volatile_acidity = float(request.form['volatile_acidity'])
-    citric_acid = float(request.form['citric_acid'])
-    residual_sugar = float(request.form['residual_sugar'])
-    chlorides = float(request.form['chlorides'])
-    free_sulfur_dioxide = float(request.form['free_sulfur_dioxide'])
-    total_sulfur_dioxide = float(request.form['total_sulfur_dioxide'])
-    density = float(request.form['density'])
-    pH = float(request.form['pH'])
-    sulfates = float(request.form['sulfates'])
-    alcohol = float(request.form['alcohol'])
+    try:
+        # Collect input features
+        features = [
+            float(request.form['fixed_acidity']),
+            float(request.form['volatile_acidity']),
+            float(request.form['citric_acid']),
+            float(request.form['residual_sugar']),
+            float(request.form['chlorides']),
+            float(request.form['free_sulfur_dioxide']),
+            float(request.form['total_sulfur_dioxide']),
+            float(request.form['density']),
+            float(request.form['pH']),
+            float(request.form['sulfates']),
+            float(request.form['alcohol'])
+        ]
 
-    input_features = np.array([fixed_acidity,volatile_acidity,citric_acid,residual_sugar,chlorides,free_sulfur_dioxide,total_sulfur_dioxide,density,pH,
-                              sulfates,alcohol ])
+        # Make a prediction
+        prediction = model.predict(np.array([features]))
+        return render_template('index.html', prediction=prediction[0])
 
-    prediction = model.predict(np.array([input_features]))
-
-    return render_template('index.html', input_features=input_features, prediction=prediction[0])
+    except Exception as e:
+        return render_template('index.html', error=str(e))
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, port=5000)
