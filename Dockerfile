@@ -1,4 +1,4 @@
-FROM python: 3.9-slim
+FROM python:3.9-slim
 #set working directory
 WORKDIR /app
 #copy th current directory contents into the containter
