@@ -1,5 +1,5 @@
 # Use a specific Python version
-FROM python:3.9-slim
+FROM python:3.10.12-slim
 
 # Update and install curl
 RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
