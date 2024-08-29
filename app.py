@@ -5,6 +5,7 @@ import numpy as np
 import pickle
 from ucimlrepo import fetch_ucirepo 
 
+
 app = Flask(__name__)
 
 # Fetch and prepare data
@@ -39,7 +40,6 @@ def predict():
             float(request.form['sulfates']),
             float(request.form['alcohol'])
         ]
-
         # Make a prediction
         prediction = model.predict(np.array([features]))
         return render_template('index.html', prediction=prediction[0])
