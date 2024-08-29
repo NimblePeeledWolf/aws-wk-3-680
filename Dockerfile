@@ -1,13 +1,13 @@
 FROM python:3.9-slim
-#set working directory
+# Set working directory
 WORKDIR /app
-#copy th current directory contents into the containter
+# Copy the current directory contents into the container
 COPY . /app
-#install needed packages
+# Install needed packages
 RUN pip install --no-cache-dir -r requirements.txt
-#make port 5000 available to world
+# Make port 5000 available to the world
 EXPOSE 5000
-#define environment variable
+# Define environment variable
 ENV PORT 5000
-#run app.py when container launches
+# Run app.py when the container launches
 CMD ["python", "app.py"]
